@@ -66,8 +66,8 @@ pipeline {
                 }
             }
         }
-        when { changeset "sts/*"}
         stage('git tag') {
+            when { changeset "sts/*"}
             steps {
                 bat "git add build-info.md"
                 bat "git commit -m \"jenkins build ${currentBuild.number}\" -a"
@@ -75,8 +75,8 @@ pipeline {
                 bat "git push origin v-${currentBuild.number}"
             }
         }
-        when { changeset "sts/*"} 
         stage('deploy') {
+            when { changeset "sts/*"} 
             steps {
                 echo 'deploy'
                 ansiblePlaybook colorized: true, 
