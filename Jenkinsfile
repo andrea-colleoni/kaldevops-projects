@@ -39,11 +39,18 @@ pipeline {
         }
         stage("write build info") {
             steps {
-                writeFile file: 'buikd-info.md', text: '''# Informazioni build
+                writeFile file: 'buikd-info.md', text: """# Informazioni build
 
                     - Progetto: ${currentBuild.projectName}-${currentBuild.number}
                     - Data build: ${ new Date().format(\'yyyy-MM-dd HH:mm:ss\')}
-                    - SHA1 git commit: ${env.GIT_COMMIT}'''
+                    - SHA1 git commit: ${env.GIT_COMMIT}"""
+            }
+        }
+        stage('maven compile') {
+            steps {
+                withMaven(jdk: 'JDK 14', maven: 'Maven 3.6.3') {
+                    bat 'mvn -f ./sts/devops-project/pom.xml test'
+                }
             }
         }
     }
