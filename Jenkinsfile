@@ -62,7 +62,7 @@ pipeline {
         }
         stage('git tag') {
             steps {
-                bat "git commit -m ""jenkins build ${currentBuild.number}"" -a"
+                bat "git commit -m \"jenkins build ${currentBuild.number}\" -a"
                 bat "git tag v-${currentBuild.number}"
                 bat "git push origin v-${currentBuild.number}"
             }
