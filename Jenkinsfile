@@ -39,7 +39,7 @@ pipeline {
         }
         stage("write build info") {
             steps {
-                writeFile file: 'buikd-info.md', text: """# Informazioni build
+                writeFile file: 'build-info.md', text: """# Informazioni build
 
                     - Progetto: ${currentBuild.projectName}-${currentBuild.number}
                     - Data build: ${ new Date().format('yyyy-MM-dd HH:mm:ss')}
@@ -62,6 +62,7 @@ pipeline {
         }
         stage('git tag') {
             steps {
+                bat "git add build-info.md"
                 bat "git commit -m \"jenkins build ${currentBuild.number}\" -a"
                 bat "git tag v-${currentBuild.number}"
                 bat "git push origin v-${currentBuild.number}"
