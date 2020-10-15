@@ -17,9 +17,21 @@ pipeline {
             steps {
                 script {
                     // Checkout the repository and save the resulting metadata
-                    def scmVars = checkout([
-                        $class: 'GitSCM'
-                    ])
+                    def scmVars = checkout(
+                        [
+                            $class: 'GitSCM', branches: [[name: '*/main']], 
+                            doGenerateSubmoduleConfigurations: false, 
+                            extensions: [], 
+                            submoduleCfg: [], 
+                            userRemoteConfigs: 
+                            [
+                                [
+                                    credentialsId: 'github-andrea', 
+                                    url: 'https://github.com/andrea-colleoni/kaldevops-projects'
+                                ]
+                            ]
+                        ]
+                    )
 
                     // Display the variable using scmVars
                     echo "scmVars.GIT_COMMIT"
@@ -29,10 +41,7 @@ pipeline {
                     env.GIT_COMMIT = scmVars.GIT_COMMIT
                     echo "env.GIT_COMMIT"
                     echo "${env.GIT_COMMIT}"
-                }                 
-                git branch: 'main',
-                    credentialsId: 'github-andrea',
-                    url: 'https://github.com/andrea-colleoni/kaldevops-projects.git'
+                } 
                 bat 'dir'
             }
         }
