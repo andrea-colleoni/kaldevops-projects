@@ -67,16 +67,17 @@ pipeline {
             }
         }
         stage {
-            when { changeset "sts/*"}
             parallel {
-               stage('git tag') {
+                when { changeset "sts/*"}
+                stage('git tag') {
                     steps {
                         bat "git add build-info.md"
                         bat "git commit -m \"jenkins build ${currentBuild.number}\" -a"
                         bat "git tag v-${currentBuild.number}"
                         bat "git push origin v-${currentBuild.number}"
                     }
-                } 
+                }
+                when { changeset "sts/*"} 
                 stage('deploy') {
                     echo 'deploy'
                 }
