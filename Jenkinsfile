@@ -67,22 +67,26 @@ pipeline {
             }
         }
         stage {
-            parallel {
+            stage('git tag') {
                 when { changeset "sts/*"}
-                stage('git tag') {
-                    steps {
-                        bat "git add build-info.md"
-                        bat "git commit -m \"jenkins build ${currentBuild.number}\" -a"
-                        bat "git tag v-${currentBuild.number}"
-                        bat "git push origin v-${currentBuild.number}"
-                    }
-                }
-                when { changeset "sts/*"} 
-                stage('deploy') {
-                    echo 'deploy'
+                steps {
+                    bat "git add build-info.md"
+                    bat "git commit -m \"jenkins build ${currentBuild.number}\" -a"
+                    bat "git tag v-${currentBuild.number}"
+                    bat "git push origin v-${currentBuild.number}"
                 }
             }
-        }
-        
+            when { changeset "sts/*"} 
+            stage('deploy') {
+                echo 'deploy'
+                ansiblePlaybook colorized: true, 
+                    credentialsId: 'andre-private-key', 
+                    installation: 'ansible-2.9', 
+                    inventory: '/inventory', 
+                    limit: 'prod', 
+                    playbook: '/plab.yml', 
+                    sudo: true
+            }
+        }  
     }
 }
