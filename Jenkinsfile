@@ -47,6 +47,7 @@ pipeline {
             }
         }
         stage('maven compile') {
+            when { changeset "sts/*"}
             steps {
                 withMaven(jdk: 'JDK 14', maven: 'Maven 3.6.3') {
                     bat 'mvn -f ./sts/devops-project/pom.xml test'
@@ -54,6 +55,7 @@ pipeline {
             }
         }
         stage('maven install+deploy') {
+            when { changeset "sts/*"}
             steps {
                 withMaven(jdk: 'JDK 14', maven: 'Maven 3.6.3') {
                     bat 'mvn -f ./sts/devops-project/pom.xml install'
@@ -61,6 +63,7 @@ pipeline {
             }
         }
         stage('git tag') {
+            when { changeset "sts/*"}
             steps {
                 bat "git add build-info.md"
                 bat "git commit -m \"jenkins build ${currentBuild.number}\" -a"
