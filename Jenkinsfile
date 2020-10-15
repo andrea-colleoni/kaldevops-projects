@@ -32,17 +32,18 @@ pipeline {
                             ]
                         ]
                     )
-
-                    // Display the variable using scmVars
-                    echo "scmVars.GIT_COMMIT"
-                    echo "${scmVars.GIT_COMMIT}"
-
-                    // Displaying the variables saving it as environment variable
                     env.GIT_COMMIT = scmVars.GIT_COMMIT
-                    echo "env.GIT_COMMIT"
-                    echo "${env.GIT_COMMIT}"
                 } 
                 bat 'dir'
+            }
+        }
+        stage("write build info") {
+            steps {
+                writeFile file: 'buikd-info.md', text: '''# Informazioni build
+
+                    - Progetto: ${currentBuild.projectName}-${currentBuild.number}
+                    - Data build: ${ new Date().format(\'yyyy-MM-dd HH:mm:ss\')}
+                    - SHA1 git commit: ${env.GIT_COMMIT}'''
             }
         }
     }
