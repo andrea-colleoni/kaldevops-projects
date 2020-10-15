@@ -42,7 +42,7 @@ pipeline {
                 writeFile file: 'buikd-info.md', text: """# Informazioni build
 
                     - Progetto: ${currentBuild.projectName}-${currentBuild.number}
-                    - Data build: ${ new Date().format(\'yyyy-MM-dd HH:mm:ss\')}
+                    - Data build: ${ new Date().format('yyyy-MM-dd HH:mm:ss')}
                     - SHA1 git commit: ${env.GIT_COMMIT}"""
             }
         }
