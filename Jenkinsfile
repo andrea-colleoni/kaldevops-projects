@@ -53,5 +53,19 @@ pipeline {
                 }
             }
         }
+        stage('maven install+deploy') {
+            steps {
+                withMaven(jdk: 'JDK 14', maven: 'Maven 3.6.3') {
+                    bat 'mvn -f ./sts/devops-project/pom.xml install'
+                }
+            }
+        }
+        stage('git tag') {
+            steps {
+                bat "git commit -m ""jenkins build ${currentBuild.number}"" -a"
+                bat "git tag v-${currentBuild.number}"
+                bat "git push origin v-${currentBuild.number}"
+            }
+        }
     }
 }
