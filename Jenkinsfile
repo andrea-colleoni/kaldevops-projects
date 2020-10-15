@@ -77,14 +77,16 @@ pipeline {
         }
         when { changeset "sts/*"} 
         stage('deploy') {
-            echo 'deploy'
-            ansiblePlaybook colorized: true, 
-                credentialsId: 'andre-private-key', 
-                installation: 'ansible-2.9', 
-                inventory: '/inventory', 
-                limit: 'prod', 
-                playbook: '/plab.yml', 
-                sudo: true
+            steps {
+                echo 'deploy'
+                ansiblePlaybook colorized: true, 
+                    credentialsId: 'andre-private-key', 
+                    installation: 'ansible-2.9', 
+                    inventory: '/inventory', 
+                    limit: 'prod', 
+                    playbook: '/plab.yml', 
+                    sudo: true
+            }
         }
     }
 }
