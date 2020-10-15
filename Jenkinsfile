@@ -1,3 +1,7 @@
+def getBuildDate() {
+    return new Date().format('yyyy-MM-dd HH:mm:ss')
+}
+
 pipeline {
     agent any
 
@@ -42,7 +46,7 @@ pipeline {
                 writeFile file: 'build-info.md', text: """# Informazioni build
 
                     - Progetto: ${currentBuild.projectName}-${currentBuild.number}
-                    - Data build: ${ new Date().format('yyyy-MM-dd HH:mm:ss')}
+                    - Data build: $BuildDate
                     - SHA1 git commit: ${env.GIT_COMMIT}"""
             }
         }
@@ -62,14 +66,22 @@ pipeline {
                 }
             }
         }
-        stage('git tag') {
+        stage {
             when { changeset "sts/*"}
-            steps {
-                bat "git add build-info.md"
-                bat "git commit -m \"jenkins build ${currentBuild.number}\" -a"
-                bat "git tag v-${currentBuild.number}"
-                bat "git push origin v-${currentBuild.number}"
+            parallel {
+               stage('git tag') {
+                    steps {
+                        bat "git add build-info.md"
+                        bat "git commit -m \"jenkins build ${currentBuild.number}\" -a"
+                        bat "git tag v-${currentBuild.number}"
+                        bat "git push origin v-${currentBuild.number}"
+                    }
+                } 
+                stage('deploy') {
+                    echo 'deploy'
+                }
             }
         }
+        
     }
 }
