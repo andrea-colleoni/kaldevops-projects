@@ -29,8 +29,7 @@ pipeline {
                     env.GIT_COMMIT = scmVars.GIT_COMMIT
                     echo "env.GIT_COMMIT"
                     echo "${env.GIT_COMMIT}"
-                    }
-                }                    
+                }                 
                 git branch: 'main',
                     credentialsId: 'github-andrea',
                     url: 'https://github.com/andrea-colleoni/kaldevops-projects.git'
